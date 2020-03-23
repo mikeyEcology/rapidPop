@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1584705650671.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2070809526",
+    "id" : "378E7509",
+    "lastKnownWriteTime" : 1584994648,
+    "last_content_update" : 1584994648944,
+    "path" : "~/Desktop/qsc/projects/DIFS_shiny/rapidPop/R/occMod_shiny.R",
+    "project_path" : "R/occMod_shiny.R",
+    "properties" : {
+        "cursorPosition" : "118,0",
+        "scrollLine" : "100",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
