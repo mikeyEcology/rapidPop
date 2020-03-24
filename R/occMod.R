@@ -1,3 +1,24 @@
+#' Run occupancy models in \code{rapidPop}.
+#' 
+#' @param input_file The path to and name of your input file
+#' @param input_file_type The file type (or extenstion). Options are c(".txt", ".csv")
+#' @param nm1 The name of the first column containing occupancy observation data. 
+#'  Your \code{input_file} must have some columns contatining information about 
+#'  whether there were animals in your observations. These columns can be either 
+#'  0s and 1s or the number of animals in the image. \code{nm1} is the name (or header)
+#'  of the first column containing these data.
+#' @param nmF The name of the final column containing occupancy data.
+#' @param parameter logical. Do you want to model the effect of a parameter on occupancy?
+#'  For example, do you have a column indicating if these observations came from
+#'  before or after control operations? If so, you could model the effect of this
+#'  parameter on occupancy.
+#' @param nm_parameter The name of the column for your \code{parameter}. If you
+#'  are modeling a paramter (\code{parameter = TRUE}), this is the column name
+#'  for the paramter you want to use. 
+#' @param digits The number of digits to round to. This number is passed to the
+#'  function \code{round}
+#' 
+#' @export
 occMod <- function(
   input_file = NULL,
   input_file_type = ".txt", # txt of csv
@@ -5,16 +26,16 @@ occMod <- function(
   nmF = "E12", # name of the final column containing occupancy data
   parameter = FALSE, # do you want to model the effect of a parameter on occupancy
   nm_parameter, # if you are using an occupancy parameter, what is the name of its column
-  n_round = 3,
+  digits = 3,
   shiny=FALSE
 ){
   
-  # read in input file
+  # read in input file #*** add utils to all
   if(input_file_type == ".txt"){
-    input_tbl <- read.table(input_file, header = TRUE)
+    input_tbl <- utils::read.table(input_file, header = TRUE)
   } else {
     if(input_file_type == ".csv") {
-      input_tbl <- read.csv(input_file)
+      input_tbl <- utils::read.csv(input_file)
     } else {
       stop("input_file_type must be either `.txt` or `.csv`")
     }
@@ -62,10 +83,10 @@ occMod <- function(
     
     # make a list of relevant information
     oc_list <- list(
-      occ_estimate = round(oc1_st@estimate, n_round),
-      occ_95CI = round(c(oc1_stCI[1], oc1_stCI[2]), n_round),
-      det_estimate = round(oc1_det@estimate, n_round),
-      det_95CI = round(c(oc1_detCI[1], oc1_detCI[2]), n_round),
+      occ_estimate = round(oc1_st@estimate, digits),
+      occ_95CI = round(c(oc1_stCI[1], oc1_stCI[2]), digits),
+      det_estimate = round(oc1_det@estimate, digits),
+      det_95CI = round(c(oc1_detCI[1], oc1_detCI[2]), digits),
       parameter_effects = oc1@estimates@estimates$state
     )
     
@@ -94,10 +115,10 @@ occMod <- function(
     
     # make a list of relevant information
     oc_list <- list(
-      occ_estimate = round(oc1_st@estimate, n_round),
-      occ_95CI = round(c(oc1_stCI[1], oc1_stCI[2]), n_round),
-      det_estimate = round(oc1_det@estimate, n_round),
-      det_95CI = round(c(oc1_detCI[1], oc1_detCI[2]), n_round)
+      occ_estimate = round(oc1_st@estimate, digits),
+      occ_95CI = round(c(oc1_stCI[1], oc1_stCI[2]), digits),
+      det_estimate = round(oc1_det@estimate, digits),
+      det_95CI = round(c(oc1_detCI[1], oc1_detCI[2]), digits)
     )
     
   }
@@ -118,8 +139,8 @@ occMod <- function(
 
 }
 
-oc <- occMod(input_file = "/Users/mikeytabak/Desktop/qsc/projects/DIFS_shiny/example/Pigs_Occupancy_Input_CA_NE_Aug.txt",
-       input_file_type = ".txt"
-       #, parameter = FALSE,
-       , parameter = TRUE,
-       nm_parameter = "param")
+# oc <- occMod(input_file = "/Users/mikeytabak/Desktop/qsc/projects/DIFS_shiny/example/Pigs_Occupancy_Input_CA_NE_Aug.txt",
+#        input_file_type = ".txt"
+#        #, parameter = FALSE,
+#        , parameter = TRUE,
+#        nm_parameter = "param")
