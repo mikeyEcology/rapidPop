@@ -139,8 +139,11 @@ occMod <- function(
 
 }
 
-# oc <- occMod(input_file = "/Users/mikeytabak/Desktop/qsc/projects/DIFS_shiny/example/Pigs_Occupancy_Input_CA_NE_Aug.txt",
-#        input_file_type = ".txt"
-#        #, parameter = FALSE,
-#        , parameter = TRUE,
-#        nm_parameter = "param")
+oc <- occMod(input_file = "/Users/mikeytabak/Desktop/qsc/projects/DIFS_shiny/example/Pigs_Occupancy_Input_CA_NE_Aug.txt",
+       input_file_type = ".txt"
+       #, parameter = FALSE,
+       , parameter = TRUE,
+       nm_parameter = "param")
+
+oc <- occMod(input_file = "C:/Users/apnpsnow/Desktop/Pigs_Occupancy_input_CA_NE_Aug.txt",
+             input_file_type = ".txt")

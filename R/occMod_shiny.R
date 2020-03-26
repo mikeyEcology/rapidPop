@@ -14,31 +14,57 @@ server <- function(input, output, session) {
   # input_file
   shinyFiles::shinyFileChoose(input, "input_file", roots=volumes, session=session, filetypes=c('csv', 'txt'))
   filename_input_file <- shiny::reactive({shinyFiles::parseFilePaths(volumes, input$input_file)[length(shinyFiles::parseFilePaths(volumes, input$input_file))]})
+  filename_input_file <- shiny::reactive({shinyFiles::parseFilePaths(volumes, input$input_file)})
+  
+  output$filepaths <- renderPrint({
+    if (is.integer(input$input_file)) {
+      cat("No files have been selected (shinyFileChoose)")
+    } else {
+      parseFilePaths(volumes, input$input_file)
+    }
+  })
   
   # run function
   shiny::observeEvent(input$run_occMod, {
     #req(input$input_file)
     inFile <<- input$input_file
-    if(is.integer(inFile)){
-     #if(is.integer(filename_input_file())){
-    #if(is.null(inFile)){
-      return(NULL)
-      #input_file_collapse <- NULL
-    } else{
-      # on Windows deal with  issuefinding the right drive
-      if(os == "Windows"){
-        root <- inFile$root
-        root1 <- gsub("\\(", "", root)
-        root2 <- gsub("\\)", "", root1) # this gives [Drive]:
-        input_file_collapse <- paste0(root2, paste0(inFile$files$`0`, collapse="/"))
-      } else { # on not windows, we don't have to deal with this
-        input_file_collapse <- paste0(inFile$files$`0`, collapse="/")
-      }
-    }
+    # if(is.integer(inFile)){
+    #  #if(is.integer(filename_input_file())){
+    # #if(is.null(inFile)){
+    #   return(NULL)
+    #   #input_file_collapse <- NULL
+    # } else{
+    #   # on Windows deal with issue finding the right drive
+    #   if(os == "Windows"){
+    #     root <- inFile$root
+    #     root1 <- gsub("\\(", "", root)
+    #     root2 <- gsub("\\)", "", root1) # this gives [Drive]:
+    #     input_file_collapse <- paste0(root2, paste0(inFile$files$`0`, collapse="/"))
+    #   } else { # on not windows, we don't have to deal with this
+    #     input_file_collapse <- paste0(inFile$files$`0`, collapse="/")
+    #   }
+    # }
+    
+   
+    # output$file <- renderPrint({
+    #   if (is.integer(input$input_file)) {
+    #     cat("No files have been selected (shinyFileChoose)")
+    #   } else {
+    #     input_file_collapse <- parseFilePaths(volumes, input$input_file)
+    #   }
+    # })
+    
     output$print <- renderPrint({
+      # adding this to the same render print
+      if (is.integer(input$input_file)) {
+        cat("No files have been selected (shinyFileChoose)")
+      } else {
+        input_file_collapse <- parseFilePaths(volumes, input$input_file)
+      }
+      
       # putting this inside renderPrint to get the output to print
       oc <<- occMod(
-        input_file = input_file_collapse,
+        input_file = as.character(input_file_collapse$datapath), #output$filepaths,  #parseFilePaths(volumes, input$input_file), #(filename_input_file()), #input_file_collapse,
         input_file_type = input$input_file_type,
         nm1 = input$nm1,
         nmF = input$nmF,
