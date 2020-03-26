@@ -20,7 +20,7 @@ server <- function(input, output, session) {
     if (is.integer(input$input_file)) {
       cat("No files have been selected (shinyFileChoose)")
     } else {
-      parseFilePaths(volumes, input$input_file)
+      shinyFiles::parseFilePaths(volumes, input$input_file)
     }
   })
   
@@ -59,7 +59,7 @@ server <- function(input, output, session) {
       if (is.integer(input$input_file)) {
         cat("No files have been selected (shinyFileChoose)")
       } else {
-        input_file_collapse <- parseFilePaths(volumes, input$input_file)
+        input_file_collapse <- shinyFiles::parseFilePaths(volumes, input$input_file)
       }
       
       # putting this inside renderPrint to get the output to print
