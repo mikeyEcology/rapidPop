@@ -1,12 +1,12 @@
-# rapidPop
+# rapidPop: Rapid population assessments in R
+This package implements Rapid Population Assessments (RPAs) using camera trap data following [Schlichting et al. (2020)](https://wildlife.onlinelibrary.wiley.com/doi/abs/10.1002/wsb.1075) in R Shiny Apps. 
 
-# How to use this package before it is made public
-- You will need to have the [unmarked package](https://cran.r-project.org/web/packages/unmarked/unmarked.pdf), available from CRAN, installed and loaded into your R session. 
-- Run all of the [code for the occMod function](https://github.com/mikeyEcology/rapidPop/blob/master/R/occMod.R). (Simply copy and paste into your R console.)
-- Run all of the [code for the occMod shiny App](https://github.com/mikeyEcology/rapidPop/blob/master/R/occMod_shiny.R). A shiny app will appear to run an occupancy model. 
+# Dependencies
+- If you are using a Windows computer, you might require an installation of [Rtools](https://cran.r-project.org/bin/windows/Rtools/) to install packages from github with the R package devtools. 
+- This package uses the R packages unmarked, shiny, and shinyFiles, and these packages will be installed when you install rapidPop following the instructions below. 
 
 
-# Install the package using (once public):
+# Install the package using:
 ```
 # install devtools if you don't have it
 if (!require('devtools')) install.packages('devtools')
@@ -19,3 +19,16 @@ devtools::install_github("mikeyEcology/rapidPop")
 # load this package
 library(rapidPop)
 ```
+
+# Run the Shiny App using:
+```
+rapidPop::runShiny("occMod")
+```
+- Select your `Input file` as the `.csv` or `txt` file containing your observations 
+  - Your input file should contain observations (if an animal was detected) using columns for each day of survey. There should be a row for each camera. 
+  - If you want to look at the effect of a parameter on occupancy, there should also be a column containing some information. For example, if you are looking at the effect of eradication on occuapncy, you could have a column called "removal", with values "before" and "after". Then you would type "removal" for the column name of the parameter. 
+  
+- For more details see this paper.
+- For more details on RPAs, see [Schlichting et al. (2020)](https://wildlife.onlinelibrary.wiley.com/doi/abs/10.1002/wsb.1075). 
+
+# Cite this package
