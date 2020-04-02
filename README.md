@@ -31,10 +31,12 @@ rapidPop::runShiny("occMod")
 - For more details see [this paper](https://www.biorxiv.org/content/10.1101/2020.03.30.017103v1).
 - For more details on RPAs, see [Schlichting et al. (2020)](https://wildlife.onlinelibrary.wiley.com/doi/abs/10.1002/wsb.1075). 
 
-# Cite this package
+# Reference for this package
 
 Tabak, M. A., Lewis, J. S., Schlichting, P. E., Snow, N. P., VerCauteren, K. C., & Miller, R. S. (2020). [rapidPop: Rapid population assessments of wildlife using camera trap data in R Shiny Applications](https://www.biorxiv.org/content/10.1101/2020.03.30.017103v1). BioRxiv, 2020.03.30.017103. doi:10.1101/2020.03.30.017103
 
+
+Or using BibTex:
 ```
 @article{tabakRapidPopRapidPopulation2020,
   title = {{{rapidPop}}: {{Rapid}} Population Assessments of Wildlife Using Camera Trap Data in {{R Shiny Applications}}},

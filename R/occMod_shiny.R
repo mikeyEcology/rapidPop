@@ -72,16 +72,37 @@ server <- function(input, output, session) {
         nm_parameter = input$nm_parameter,
         shiny=TRUE
       )
+      
       if(input$texty){
         if(input$parameter){
-          printout <- paste0("The estimated occupancy (psi) is ", oc$occ_estimate, ". \n",
-                             "The 95% confidence interval for occupancy is ", oc$occ_95CI[1], " - ", oc$occ_95CI[2], ".\n\n",
-                             "The estimated detection probability (p) is ", oc$det_estimate, " \n",
-                             "with a confidence interval of ", oc$det_95CI[1], " - ", oc$det_95CI[2], ".\n\n",
-                             "The effect of ", input$nm_parameter, " on occupancy is ", round(oc$parameter_effects@estimates[2],3),".\n\n"
-                             #"Here it the full output table for the model on occupancy probability:\n\n",
-                             #oc$parameter_effects
-          )
+          # add if statement for if number of levels to adjust interpretation
+          if(length(oc$levels) == 2){ # if there are two categories in which to compare occupancy
+            
+            # determine which level of the parameter was bigger
+            greater_level <- ifelse(oc$parameter_effects@estimates[2] > 0, 2, 1) # if parameter is positive, the second level has a positive effect
+            
+            
+            printout <- paste0("The estimated occupancy (psi) is ", oc$occ_estimate, ". \n",
+                               "The 95% confidence interval for occupancy is ", oc$occ_95CI[1], " - ", oc$occ_95CI[2], ".\n\n",
+                               "The estimated detection probability (p) is ", oc$det_estimate, " \n",
+                               "with a confidence interval of ", oc$det_95CI[1], " - ", oc$det_95CI[2], ".\n\n",
+                               "The effect of ", input$nm_parameter, " on occupancy is ", round(oc$parameter_effects@estimates[2],3),".\n",
+                               "This means that '", oc$levels[greater_level], "' had a positive effect on occupancy;\n",
+                               "the magnitude of this effect was ", round(abs(oc$parameter_effects@estimates[2]), 3), ".\n"
+                               #"Here it the full output table for the model on occupancy probability:\n\n",
+                               #oc$parameter_effects
+            )
+          } else { # more than two categories (it is difficult to interpret), or numeric covariate
+            printout <- paste0("The estimated occupancy (psi) is ", oc$occ_estimate, ". \n",
+                               "The 95% confidence interval for occupancy is ", oc$occ_95CI[1], " - ", oc$occ_95CI[2], ".\n\n",
+                               "The estimated detection probability (p) is ", oc$det_estimate, " \n",
+                               "with a confidence interval of ", oc$det_95CI[1], " - ", oc$det_95CI[2], ".\n\n",
+                               "The effect of ", input$nm_parameter, " on occupancy is ", round(oc$parameter_effects@estimates[2],3),".\n\n"
+                               #"Here it the full output table for the model on occupancy probability:\n\n",
+                               #oc$parameter_effects
+            )
+          }
+
           #printout <- oc
           #oc$occ_estimate
         } else {
@@ -125,7 +146,7 @@ ui <- shiny::fluidPage(
         "No" = FALSE,
         "Yes" = TRUE
       )),
-      shiny::textInput("nm_parameter", "If yes, enter the column name of the parameter", "param"),#formals(occMod)[["nm_parameter"]]),
+      shiny::textInput("nm_parameter", "If yes, enter the column name of the parameter", "removal"),#formals(occMod)[["nm_parameter"]]),
       shiny::selectInput('texty', 'Do you want a pretty printout? Answering No will be neater, but answering Yes will provide more information if you are including a parameter.', c(
         "Yes" = TRUE,
         "No" = FALSE

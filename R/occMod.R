@@ -22,8 +22,8 @@
 occMod <- function(
   input_file = NULL,
   input_file_type = ".txt", # txt of csv
-  nm1 = "E01", # name of the first column containing occupancy data
-  nmF = "E12", # name of the final column containing occupancy data
+  nm1 = "day01", # name of the first column containing occupancy data
+  nmF = "day12", # name of the final column containing occupancy data
   parameter = FALSE, # do you want to model the effect of a parameter on occupancy
   nm_parameter, # if you are using an occupancy parameter, what is the name of its column
   digits = 3,
@@ -50,23 +50,31 @@ occMod <- function(
       stop(paste0("Your parameter (", nm_parameter, ") must have at least 2 values to model the effect of this parameter on occupancy. Either select a different parameter or run the model without a parameter (covariate)."))
     }
     
+    # determine if parameter is a number or factor
+    param_type <- ifelse(is.numeric(param_values), "numeric", "factor")
+    
     # subset by relevant columns
     y1 <- input_tbl[, which(colnames(input_tbl)==nm1):which(colnames(input_tbl)==nmF)]
     # convert the observations to 1s and 0s
     y1 <- ifelse(y1>0, 1, 0)
     
     # convert parameter to numeric
-    input_tbl[,nm_parameter] <- as.numeric(input_tbl[,nm_parameter])
+    #input_tbl[,nm_parameter] <- as.numeric(input_tbl[,nm_parameter])
     
     # set up unmarked data frame
     siteCovs <- data.frame(param= input_tbl[, c(nm_parameter)])
     umf <- unmarked::unmarkedFrameOccu(y = as.matrix(y1), siteCovs = siteCovs) # 
     
-    # scale covariate
-    unmarked::siteCovs(umf) <- scale(unmarked::siteCovs(umf))
+    # scale covariate if numeric
+    if(param_type == "numeric"){
+      unmarked::siteCovs(umf) <- scale(unmarked::siteCovs(umf))
+    } 
     
-    # run occupancy model
-    oc1 <- unmarked::occu(~1 ~param, data = umf)
+    # run occupancy model 
+    #param <- eval(parse(text=paste0("input_tbl$", nm_parameter)))
+    #oc1 <- unmarked::occu(~1 ~ eval(parse(text=paste0("input_tbl$", nm_parameter))), data = umf)
+    oc1 <- unmarked::occu(~1 ~ param, data = umf)
+    
     
     # extract occupancy data
     oc1_st <- unmarked::backTransform(unmarked::linearComb(oc1, coefficients = c(1,0), type="state"))
@@ -87,7 +95,8 @@ occMod <- function(
       occ_95CI = round(c(oc1_stCI[1], oc1_stCI[2]), digits),
       det_estimate = round(oc1_det@estimate, digits),
       det_95CI = round(c(oc1_detCI[1], oc1_detCI[2]), digits),
-      parameter_effects = oc1@estimates@estimates$state
+      parameter_effects = oc1@estimates@estimates$state,
+      levels=levels(param_values)
     )
     
   } else { # no occupancy parameters
@@ -140,10 +149,15 @@ occMod <- function(
 }
 
 # oc <- occMod(input_file = "/Users/mikeytabak/Desktop/qsc/projects/DIFS_shiny/example/Pigs_Occupancy_Input_CA_NE_Aug.txt",
-#        input_file_type = ".txt"
-#        #, parameter = FALSE,
+#        input_file_type = ".txt",
+#        nm1 = "E01",
+#        nmF="E12"
 #        , parameter = TRUE,
+#        #, parameter = TRUE,
 #        nm_parameter = "param")
 # 
-# oc <- occMod(input_file = "C:/Users/apnpsnow/Desktop/Pigs_Occupancy_input_CA_NE_Aug.txt",
-#              input_file_type = ".txt")
+# occMod(input_file = "/Users/mikeytabak/example_input_file.txt", 
+#        #parameter=FALSE,
+#        parameter=TRUE,
+#        nm_parameter="removal")
+

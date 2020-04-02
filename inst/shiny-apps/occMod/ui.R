@@ -18,7 +18,7 @@ ui <- shiny::fluidPage(
         "No" = FALSE,
         "Yes" = TRUE
       )),
-      shiny::textInput("nm_parameter", "If yes, enter the column name of the parameter", "param"),#formals(occMod)[["nm_parameter"]]),
+      shiny::textInput("nm_parameter", "If yes, enter the column name of the parameter", "removal"),#formals(occMod)[["nm_parameter"]]),
       shiny::selectInput('texty', 'Do you want a pretty printout? Answering No will be neater, but answering Yes will provide more information if you are including a parameter.', c(
         "Yes" = TRUE,
         "No" = FALSE
@@ -30,6 +30,7 @@ ui <- shiny::fluidPage(
       shiny::helpText("Below is a summary of the results of your model:"),
       shiny::br(),
       shiny::verbatimTextOutput("print")
-    )
+      )
   )
 )
+

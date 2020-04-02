@@ -7,8 +7,8 @@
 occMod(
   input_file = NULL,
   input_file_type = ".txt",
-  nm1 = "E01",
-  nmF = "E12",
+  nm1 = "day01",
+  nmF = "day12",
   parameter = FALSE,
   nm_parameter,
   digits = 3,
