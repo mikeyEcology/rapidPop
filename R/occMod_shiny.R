@@ -45,7 +45,7 @@ server <- function(input, output, session) {
     #   }
     # }
     
-   
+    
     # output$file <- renderPrint({
     #   if (is.integer(input$input_file)) {
     #     cat("No files have been selected (shinyFileChoose)")
@@ -82,27 +82,35 @@ server <- function(input, output, session) {
             greater_level <- ifelse(oc$parameter_effects@estimates[2] > 0, 2, 1) # if parameter is positive, the second level has a positive effect
             
             
-            printout <- paste0("The estimated occupancy (psi) is ", oc$occ_estimate, ". \n",
+            printout <- paste0("The overall estimated occupancy (psi) is ", oc$occ_estimate, ". \n",
                                "The 95% confidence interval for occupancy is ", oc$occ_95CI[1], " - ", oc$occ_95CI[2], ".\n\n",
                                "The estimated detection probability (p) is ", oc$det_estimate, " \n",
                                "with a confidence interval of ", oc$det_95CI[1], " - ", oc$det_95CI[2], ".\n\n",
                                "The effect of ", input$nm_parameter, " on occupancy is ", round(oc$parameter_effects@estimates[2],3),".\n",
                                "This means that '", oc$levels[greater_level], "' had a positive effect on occupancy;\n",
-                               "the magnitude of this effect was ", round(abs(oc$parameter_effects@estimates[2]), 3), ".\n"
-                               #"Here it the full output table for the model on occupancy probability:\n\n",
-                               #oc$parameter_effects
+                               "the magnitude of this effect was ", round(abs(oc$parameter_effects@estimates[2]), 3), ".\n\n",
+                               "Here is the estimated occupancy (and 95% confidence intervals) \n", 
+                               "in each level of ", input$nm_parameter, ".\n",
+                               "Occupancy when ", input$nm_parameter, " = ", oc$levels[1], ": ", oc$occ_param_tbl[1,1], " (", oc$occ_param_tbl[2,1], ", ", oc$occ_param_tbl[3,1], ")\n",
+                               "Occupancy when ", input$nm_parameter, " = ", oc$levels[2], ": ", oc$occ_param_tbl[1,2], " (", oc$occ_param_tbl[2,2], ", ", oc$occ_param_tbl[3,2], ")\n"
+                               
             )
-          } else { # more than two categories (it is difficult to interpret), or numeric covariate
-            printout <- paste0("The estimated occupancy (psi) is ", oc$occ_estimate, ". \n",
-                               "The 95% confidence interval for occupancy is ", oc$occ_95CI[1], " - ", oc$occ_95CI[2], ".\n\n",
-                               "The estimated detection probability (p) is ", oc$det_estimate, " \n",
-                               "with a confidence interval of ", oc$det_95CI[1], " - ", oc$det_95CI[2], ".\n\n",
-                               "The effect of ", input$nm_parameter, " on occupancy is ", round(oc$parameter_effects@estimates[2],3),".\n\n"
-                               #"Here it the full output table for the model on occupancy probability:\n\n",
-                               #oc$parameter_effects
-            )
-          }
-
+            
+            
+          } else {
+           # if (length(oc$levels) > 2){
+           # } else { # more than two categories (it is difficult to interpret), or numeric covariate
+              printout <- paste0("The estimated overall occupancy (psi) is ", oc$occ_estimate, ". \n",
+                                 "The 95% confidence interval for occupancy is ", oc$occ_95CI[1], " - ", oc$occ_95CI[2], ".\n\n",
+                                 "The estimated detection probability (p) is ", oc$det_estimate, " \n",
+                                 "with a confidence interval of ", oc$det_95CI[1], " - ", oc$det_95CI[2], ".\n\n",
+                                 "The effect of ", input$nm_parameter, " on occupancy is ", round(oc$parameter_effects@estimates[2],3),".\n\n"
+                                 #"Here it the full output table for the model on occupancy probability:\n\n",
+                                 #oc$parameter_effects
+              )
+            }
+          #}
+          
           #printout <- oc
           #oc$occ_estimate
         } else {
@@ -116,14 +124,12 @@ server <- function(input, output, session) {
         print(oc)
       }
       
-
+    }) # end renderPrint
     
-      }) # end renderPrint
-
     
-   
+    
   }) # end observe event
-
+  
 }
 
 ui <- shiny::fluidPage(
@@ -158,7 +164,7 @@ ui <- shiny::fluidPage(
       shiny::helpText("Below is a summary of the results of your model:"),
       shiny::br(),
       shiny::verbatimTextOutput("print")
-      )
+    )
   )
 )
 

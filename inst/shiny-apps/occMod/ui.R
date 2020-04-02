@@ -30,7 +30,6 @@ ui <- shiny::fluidPage(
       shiny::helpText("Below is a summary of the results of your model:"),
       shiny::br(),
       shiny::verbatimTextOutput("print")
-      )
+    )
   )
 )
-

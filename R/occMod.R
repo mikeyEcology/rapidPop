@@ -66,20 +66,29 @@ occMod <- function(
     siteCovs <- data.frame(param= input_tbl[, c(nm_parameter)])
     umf <- unmarked::unmarkedFrameOccu(y = as.matrix(y1), siteCovs = siteCovs) # 
     
-    # scale covariate if numeric
+    # scale covariate if numeric... Also set up coefficient value for parameter in backtransformation of variables
     if(param_type == "numeric"){
       unmarked::siteCovs(umf) <- scale(unmarked::siteCovs(umf))
-    } 
+      coefficient_param <- 0 # if numeric and scaled, the mean param value is 0
+    } else {
+      coefficient_param <- 0 #mean(0:length(levels(param_values))) # if factor, param_values will be converted to 1,2,... Need the mean for occupancy
+    }
     
     # run occupancy model 
     #param <- eval(parse(text=paste0("input_tbl$", nm_parameter)))
     #oc1 <- unmarked::occu(~1 ~ eval(parse(text=paste0("input_tbl$", nm_parameter))), data = umf)
     oc1 <- unmarked::occu(~1 ~ param, data = umf)
+    oc2 <- unmarked::occu(~1 ~1, data = umf) # for estimating occupancy if modeling the effect of factors on occupancy
     
-    
-    # extract occupancy data
+    # extract occupancy data *** coefficients need to be handled differently if factor
+    if(param_type == "numeric"){
     oc1_st <- unmarked::backTransform(unmarked::linearComb(oc1, coefficients = c(1,0), type="state"))
     oc1_stCI <- unmarked::confint(unmarked::backTransform(unmarked::linearComb(oc1, coefficients = c(1,0), type="state")))
+    } else{
+      oc1_st <- unmarked::backTransform(oc2, "state") # state is Z: occupancy state
+      oc1_stCI <- unmarked::confint(unmarked::backTransform(oc2, type="state"))      
+    }
+    
     
     # extract detection data
     oc1_det <- unmarked::backTransform(oc1, "det") # det is p: detection probability
@@ -90,15 +99,48 @@ occMod <- function(
     # rename the parameter in this table as the name given to function
     names(oc1@estimates@estimates$state@estimates)[2] <- nm_parameter
     
-    # make a list of relevant information
-    oc_list <- list(
-      occ_estimate = round(oc1_st@estimate, digits),
-      occ_95CI = round(c(oc1_stCI[1], oc1_stCI[2]), digits),
-      det_estimate = round(oc1_det@estimate, digits),
-      det_95CI = round(c(oc1_detCI[1], oc1_detCI[2]), digits),
-      parameter_effects = oc1@estimates@estimates$state,
-      levels=levels(param_values)
-    )
+    # if parameter is a factor, estimate occupancy at each level
+    if(param_type != "numeric"){
+      df <- data.frame(y1, siteCovs)
+      occ_param_tbl <- matrix(NA, nrow=3, ncol=num_param_values)
+      for(i in 1:num_param_values){
+        dat_val <- df[df$param==levels(param_values)[i], ] # data for just this value
+        umf <- unmarked::unmarkedFrameOccu(y = as.matrix(dat_val[, 1:ncol(y1)]))
+        # run the occupancy model with just this dataset
+        oc_dat <- unmarked::occu(~1 ~1, data = umf)
+        oc_dat_st <- unmarked::backTransform(oc_dat, "state") # state is Z: occupancy state
+        oc_dat_stCI <- unmarked::confint(unmarked::backTransform(oc_dat, type="state"))
+        occ_param_tbl[1, i] <- round(oc_dat_st@estimate, digits)
+        occ_param_tbl[2, i] <- round(oc_dat_stCI[1], digits)
+        occ_param_tbl[3, i] <- round(oc_dat_stCI[2], digits)
+      }
+      colnames(occ_param_tbl) <- levels(param_values)
+      rownames(occ_param_tbl) <- c("occupancy_estimate", "lower_95_CI", "upper_95_CI")
+      
+      # make a list of relevant information
+      oc_list <- list(
+        occ_estimate = round(oc1_st@estimate, digits),
+        occ_95CI = round(c(oc1_stCI[1], oc1_stCI[2]), digits),
+        det_estimate = round(oc1_det@estimate, digits),
+        det_95CI = round(c(oc1_detCI[1], oc1_detCI[2]), digits),
+        parameter_effects = oc1@estimates@estimates$state,
+        levels=levels(param_values),
+        occ_param_tbl = occ_param_tbl
+      )
+      
+    } else {
+      # make a list of relevant information
+      oc_list <- list(
+        occ_estimate = round(oc1_st@estimate, digits),
+        occ_95CI = round(c(oc1_stCI[1], oc1_stCI[2]), digits),
+        det_estimate = round(oc1_det@estimate, digits),
+        det_95CI = round(c(oc1_detCI[1], oc1_detCI[2]), digits),
+        parameter_effects = oc1@estimates@estimates$state,
+        levels=levels(param_values)
+      )
+    }
+       
+    
     
   } else { # no occupancy parameters
     #cat("running occupancy model without parameter\n")
@@ -157,8 +199,8 @@ occMod <- function(
 #        #, parameter = TRUE,
 #        nm_parameter = "param")
 # 
-# occMod(input_file = "/Users/mikeytabak/example_input_file.txt", 
+# occMod(input_file = "/Users/mikeytabak/example_input_file.txt",
 #        #parameter=FALSE,
 #        parameter=TRUE,
 #        nm_parameter="removal")
-
+# input_file="/Users/mikeytabak/Desktop/qsc/projects/DIFS_shiny/rapidPop/example_input_file.txt"
