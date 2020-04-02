@@ -16,7 +16,8 @@ occMod(
 )
 }
 \arguments{
-\item{input_file}{The path to and name of your input file}
+\item{input_file}{The path to and name of your input file. This package includes an
+\code{example_input_file.txt} that might be helpful.}
 
 \item{input_file_type}{The file type (or extenstion). Options are c(".txt", ".csv")}
 

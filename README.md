@@ -28,12 +28,12 @@ rapidPop::runShiny("occMod")
   - Your input file should contain observations (if an animal was detected) using columns for each day of survey. There should be a row for each camera. 
   - If you want to look at the effect of a parameter on occupancy, there should also be a column containing some information. For example, if you are looking at the effect of eradication on occuapncy, you could have a column called "removal", with values "before" and "after". Then you would type "removal" for the column name of the parameter. 
   
-- For more details see [this paper](https://www.biorxiv.org/content/10.1101/2020.03.30.017103v1).
+- For more details see [this paper](https://www.biorxiv.org/content/10.1101/2020.03.30.017103v2).
 - For more details on RPAs, see [Schlichting et al. (2020)](https://wildlife.onlinelibrary.wiley.com/doi/abs/10.1002/wsb.1075). 
 
 # Reference for this package
 
-Tabak, M. A., Lewis, J. S., Schlichting, P. E., Snow, N. P., VerCauteren, K. C., & Miller, R. S. (2020). [rapidPop: Rapid population assessments of wildlife using camera trap data in R Shiny Applications](https://www.biorxiv.org/content/10.1101/2020.03.30.017103v1). BioRxiv, 2020.03.30.017103. doi:10.1101/2020.03.30.017103
+Tabak, M. A., Lewis, J. S., Schlichting, P. E., Snow, N. P., VerCauteren, K. C., & Miller, R. S. (2020). [rapidPop: Rapid population assessments of wildlife using camera trap data in R Shiny Applications](https://www.biorxiv.org/content/10.1101/2020.03.30.017103v2). BioRxiv, 2020.03.30.017103. doi:10.1101/2020.03.30.017103
 
 
 Or using BibTex:

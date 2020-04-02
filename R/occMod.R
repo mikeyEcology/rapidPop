@@ -1,6 +1,7 @@
 #' Run occupancy models in \code{rapidPop}.
 #' 
-#' @param input_file The path to and name of your input file
+#' @param input_file The path to and name of your input file. This package includes an
+#'  \code{example_input_file.txt} that might be helpful.
 #' @param input_file_type The file type (or extenstion). Options are c(".txt", ".csv")
 #' @param nm1 The name of the first column containing occupancy observation data. 
 #'  Your \code{input_file} must have some columns contatining information about 

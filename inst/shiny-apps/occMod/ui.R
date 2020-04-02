@@ -7,7 +7,7 @@ ui <- shiny::fluidPage(
   shiny::sidebarLayout(
     
     shiny::sidebarPanel(
-      shinyFiles::shinyFilesButton('input_file', "Input file", title="Select the file containing your animal observation data.", multiple=FALSE),
+      shinyFiles::shinyFilesButton('input_file', "Input file", title="Select the file containing your animal observation data. You can examine the example_input_file provided with this package for guidance.", multiple=FALSE),
       shiny::selectInput('input_file_type', 'What type of file is your Input file', c(
         "txt" = ".txt",
         "csv" = ".csv"
